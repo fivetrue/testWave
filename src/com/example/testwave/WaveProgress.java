@@ -63,14 +63,14 @@ public class WaveProgress extends View{
                 if(waveNumber == mWaveBars.length){
                     waveHeightOffset /= 4;
                 }else if(waveNumber == mWaveBars.length - 1){
-                    waveHeightOffset /= 1.5;
+                    waveHeightOffset /= 1.4;
                 }
             }else{
                 waveHeightOffset = mWaveValue * waveNumber;
                 if(waveNumber == 1){
                     waveHeightOffset /= 4;
                 }else if(waveNumber == 2){
-                    waveHeightOffset /= 1.5;
+                    waveHeightOffset /= 1.4;
                 }
             }
 
@@ -268,6 +268,7 @@ public class WaveProgress extends View{
         private Object Tag = null;
         private Paint paint = null;
         private boolean isIncrease = true;
+        private Path mPath = null;
 
         public WaveBar(float left, float top, float right, float bottom, float maxHeight, float minHeight){
             this.left = left;
@@ -343,26 +344,30 @@ public class WaveProgress extends View{
         }
 
         public Path addPath(Path path, boolean addCurv){
-            if(path == null){
-                path = new Path();
+            if(mPath == null){
+                mPath = new Path();
+            }
+            mPath.reset();
+            if(path != null){
+                mPath.addPath(path);
             }
             float curvValue = MAX_HEIGHT * 0.08f;
-            path.moveTo(left, top);
-            path.lineTo(left, bottom);
+            mPath.moveTo(left, top);
+            mPath.lineTo(left, bottom);
             if(addCurv){
-                path.cubicTo(left, bottom, (right + left) / 2 , bottom + curvValue, right, bottom);
+                mPath.cubicTo(left, bottom, (right + left) / 2 , bottom + curvValue, right, bottom);
             }else{
-                path.lineTo(right, bottom);
+                mPath.lineTo(right, bottom);
             }
-            path.lineTo(right, bottom);
-            path.lineTo(right, top);
+            mPath.lineTo(right, bottom);
+            mPath.lineTo(right, top);
             if(addCurv){
-                path.cubicTo(right, top, (right + left) / 2 , top - curvValue, left, top);
+                mPath.cubicTo(right, top, (right + left) / 2 , top - curvValue, left, top);
             }else{
-                path.lineTo(left, top);
+                mPath.lineTo(left, top);
             }
-            path.close();
-            return path;
+            mPath.close();
+            return mPath;
         }
 
         public Path getPath(){
